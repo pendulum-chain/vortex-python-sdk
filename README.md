@@ -15,8 +15,8 @@ This package wraps the TypeScript/JavaScript Vortex SDK using Node.js subprocess
 ### Install
 
 ```bash
-git clone https://github.com/pendulum-chain/vortex.git
-cd vortex/pythonmonkey-sdk
+git clone https://github.com/pendulum-chain/vortex-python-sdk.git
+cd vortex-python-sdk
 
 # Install the Vortex SDK
 npm install

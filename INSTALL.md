@@ -8,10 +8,8 @@
 ## Quick Install
 
 ```bash
-cd pythonmonkey-sdk
-
 # Install SDK from npm
-npm install
+npm install -g @vortexfi/sdk@latest
 
 # Install Python package
 pip install -e .

@@ -8,7 +8,7 @@ setup(
     version="0.1.0",
     author="Pendulum Chain",
     author_email="info@pendulumchain.tech",
-    description="Python wrapper for Vortex SDK using PythonMonkey",
+    description="Python wrapper for Vortex SDK using Node.js subprocess",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/pendulum-chain/vortex",
