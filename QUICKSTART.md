@@ -3,7 +3,6 @@
 ## Installation
 
 ```bash
-cd pythonmonkey-sdk
 npm install
 pip install -e .
 ```
