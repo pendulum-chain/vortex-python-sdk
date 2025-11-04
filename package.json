@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@vortexfi/sdk": "0.4.7"
+  },
+  "description": "Node.js dependencies for Vortex SDK Python wrapper",
+  "devDependencies": {},
+  "name": "vortex-sdk-python-deps",
+  "private": true,
+  "scripts": {},
+  "version": "0.1.0"
+}
