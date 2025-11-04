@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="vortex-sdk-python",
-    version="0.1.0",
+    version="0.1.2",
     author="Pendulum Chain",
     author_email="info@pendulumchain.tech",
     description="Python wrapper for Vortex SDK using Node.js subprocess",

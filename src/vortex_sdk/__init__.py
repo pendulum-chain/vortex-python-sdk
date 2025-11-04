@@ -18,7 +18,7 @@ from .exceptions import (
     APIError,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 __all__ = [
     "VortexSDK",
     "FiatToken",
