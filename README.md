@@ -1,5 +1,11 @@
 # Vortex SDK - Python Wrapper
 
+[![PyPI version](https://badge.fury.io/py/vortex-sdk-python.svg)](https://badge.fury.io/py/vortex-sdk-python)
+[![Python](https://img.shields.io/pypi/pyversions/vortex-sdk-python.svg)](https://pypi.org/project/vortex-sdk-python/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/pendulum-chain/vortex-python-sdk/workflows/Tests/badge.svg)](https://github.com/pendulum-chain/vortex-python-sdk/actions)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 A Python wrapper for the Vortex SDK enabling cross-chain ramp operations from Python applications.
 
 ## Overview
