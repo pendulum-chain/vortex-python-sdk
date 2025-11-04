@@ -43,9 +43,8 @@ class NodeBridge:
     
     def _find_sdk(self) -> None:
         """Find the npm-installed SDK (local or global)."""
-        # First check local node_modules
-        project_root = Path(__file__).parent.parent.parent
-        sdk_path = project_root / "node_modules" / "@vortexfi" / "sdk"
+        # First check local node_modules in current working directory
+        sdk_path = Path.cwd() / "node_modules" / "@vortexfi" / "sdk"
         
         if sdk_path.exists():
             return  # Local installation found
@@ -123,7 +122,7 @@ class NodeBridge:
                 capture_output=True,
                 text=True,
                 check=False,
-                cwd=str(Path(__file__).parent.parent.parent),
+                cwd=str(Path.cwd()),
                 timeout=timeout
             )
             
