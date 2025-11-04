@@ -44,7 +44,7 @@ npm install @vortexfi/sdk
 from vortex_sdk import VortexSDK, FiatToken, EvmToken, Networks
 
 config = {
-    "apiBaseUrl": "https://api.vortex.pendulumchain.tech"
+    "apiBaseUrl": "https://api.vortexfinance.co"
 }
 
 sdk = VortexSDK(config)
