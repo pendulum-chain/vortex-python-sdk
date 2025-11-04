@@ -35,7 +35,7 @@ pip install -e .
 
 ```bash
 pip install vortex-sdk-python
-npm install @vortexfi/sdk
+npm install -g @vortexfi/sdk
 ```
 
 ## Quick Start
