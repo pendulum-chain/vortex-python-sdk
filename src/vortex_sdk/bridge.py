@@ -42,14 +42,41 @@ class NodeBridge:
             )
     
     def _find_sdk(self) -> None:
-        """Find the npm-installed SDK."""
+        """Find the npm-installed SDK (local or global)."""
+        # First check local node_modules
         project_root = Path(__file__).parent.parent.parent
         sdk_path = project_root / "node_modules" / "@vortexfi" / "sdk"
         
-        if not sdk_path.exists():
-            raise VortexSDKError(
-                "@vortexfi/sdk not found. Run: npm install"
+        if sdk_path.exists():
+            return  # Local installation found
+        
+        # Check if Node.js can require it (works for global installs too)
+        try:
+            test_script = """
+            try {
+                require.resolve('@vortexfi/sdk');
+                console.log('OK');
+            } catch (e) {
+                process.exit(1);
+            }
+            """
+            result = subprocess.run(
+                ["node", "-e", test_script],
+                capture_output=True,
+                text=True,
+                check=False
             )
+            if result.returncode == 0 and result.stdout.strip() == "OK":
+                return  # SDK is accessible to Node.js (global or local)
+        except Exception:
+            pass
+        
+        # SDK not found anywhere
+        raise VortexSDKError(
+            "@vortexfi/sdk not found. Install it with:\n"
+            "  npm install @vortexfi/sdk  (local install)\n"
+            "  npm install -g @vortexfi/sdk  (global install)"
+        )
     
     def call_method(self, method: str, *args, timeout: int = 60) -> Any:
         """Call a SDK method via Node.js.

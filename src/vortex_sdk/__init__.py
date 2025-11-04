@@ -1,7 +1,7 @@
 """
 Vortex SDK - Python Wrapper
 
-A Python wrapper for the Vortex SDK using PythonMonkey.
+A Python wrapper for the Vortex SDK using Node.js subprocess execution.
 """
 
 from .sdk import VortexSDK
