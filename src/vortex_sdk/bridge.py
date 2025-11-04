@@ -14,13 +14,13 @@ from .exceptions import VortexSDKError
 
 class NodeBridge:
     """Bridge to execute Vortex SDK via Node.js subprocess."""
-    
+
     def __init__(self, sdk_config: Dict[str, Any]):
         """Initialize the Node.js bridge."""
         self.sdk_config = sdk_config
         self._verify_node()
         self._find_sdk()
-    
+
     def _verify_node(self) -> None:
         """Verify Node.js is available."""
         try:
@@ -40,15 +40,15 @@ class NodeBridge:
                 "Node.js 18+ is required but not found. "
                 "Install from https://nodejs.org/"
             )
-    
+
     def _find_sdk(self) -> None:
         """Find the npm-installed SDK (local or global)."""
         # First check local node_modules in current working directory
         sdk_path = Path.cwd() / "node_modules" / "@vortexfi" / "sdk"
-        
+
         if sdk_path.exists():
             return  # Local installation found
-        
+
         # Check if Node.js can require it (works for global installs too)
         try:
             test_script = """
@@ -69,38 +69,37 @@ class NodeBridge:
                 return  # SDK is accessible to Node.js (global or local)
         except Exception:
             pass
-        
+
         # SDK not found anywhere
         raise VortexSDKError(
             "@vortexfi/sdk not found. Install it with:\n"
             "  npm install @vortexfi/sdk  (local install)\n"
             "  npm install -g @vortexfi/sdk  (global install)"
         )
-    
+
     def call_method(self, method: str, *args, timeout: int = 60) -> Any:
         """Call a SDK method via Node.js.
-        
+
         Args:
             method: SDK method name
             *args: Method arguments
             timeout: Timeout in seconds (default 60, use higher for registerRamp)
         """
         script = f"""
+        import {{ VortexSdk }} from "@vortexfi/sdk";
         (async () => {{
             try {{
                 // Redirect console.log to stderr to keep stdout clean for JSON only
                 const originalLog = console.log;
                 console.log = (...args) => console.error(...args);
-                
-                const {{ VortexSdk }} = require('@vortexfi/sdk');
-                
+
                 const config = {json.dumps(self.sdk_config)};
                 const sdk = new VortexSdk(config);
-                
+
                 const methodArgs = {json.dumps(args)};
-                
+
                 const result = await sdk.{method}(...methodArgs);
-                
+
                 // Restore console.log and output JSON to stdout
                 console.log = originalLog;
                 console.log(JSON.stringify({{ success: true, result }}));
@@ -115,17 +114,17 @@ class NodeBridge:
             }}
         }})();
         """
-        
+
         try:
             result = subprocess.run(
-                ["node", "-e", script],
+                ["node", "--input-type=module", "-e", script],
                 capture_output=True,
                 text=True,
                 check=False,
                 cwd=str(Path.cwd()),
                 timeout=timeout
             )
-            
+
             # Check for errors in stderr
             if result.stderr:
                 # Try to parse as JSON error first
@@ -143,20 +142,20 @@ class NodeBridge:
                                 )
                         except json.JSONDecodeError:
                             pass
-                
+
                 # If returncode is non-zero, treat stderr as error
                 if result.returncode != 0:
                     raise VortexSDKError(
                         f"Node.js process failed (exit code {result.returncode}):\n{result.stderr}"
                     )
-            
+
             if not result.stdout:
                 raise VortexSDKError(
                     f"No output from Node.js process.\n"
                     f"Exit code: {result.returncode}\n"
                     f"stderr output:\n{result.stderr or '(empty)'}"
                 )
-            
+
             # Try to find JSON in stdout (last line that starts with {)
             stdout_lines = result.stdout.strip().split('\n')
             json_line = None
@@ -164,21 +163,21 @@ class NodeBridge:
                 if line.strip().startswith('{'):
                     json_line = line
                     break
-            
+
             if not json_line:
                 raise VortexSDKError(
                     f"No JSON response found in stdout.\n"
                     f"stdout output:\n{result.stdout[:1000]}\n"
                     f"stderr output:\n{result.stderr[:500] if result.stderr else '(empty)'}"
                 )
-            
+
             response = json.loads(json_line)
             if not response.get('success'):
                 error_msg = response.get('error', 'Unknown error')
                 raise VortexSDKError(f"SDK error: {error_msg}")
-            
+
             return response['result']
-            
+
         except subprocess.TimeoutExpired:
             raise VortexSDKError(
                 f"SDK call '{method}' timed out after {timeout}s. "
